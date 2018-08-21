@@ -28,7 +28,8 @@ def getCalendar(url):
   calendar = list(completeCalendar.find_all('a'))
   return calendar
 
-# if no match to be played exists: return 0
+# if no matches found: return 0
+# if no matches remaining: return 1
 # if there exists a match to be played: return url
 def findNextTeamMatch(calendar, team):
   matchList = []
@@ -40,7 +41,7 @@ def findNextTeamMatch(calendar, team):
       matchList.append(entry)
   
   if len(matchList) == 0:
-    # no matches found that the team has to play
+    # no matches found that contain the team
     return 0
   else:
     for match in matchList:
@@ -51,7 +52,7 @@ def findNextTeamMatch(calendar, team):
         # Return url
         return match['href']
     # No uncompleted match remaining
-    return 0
+    return 1
 
 # Returns all the details of the match
 # url must correspond to a match page
@@ -71,7 +72,7 @@ def getDetailsMatchPage(url):
       counter += 1
   
   #Add seperation
-  message.append("\n")
+  message.append("")
 
   #Get the maps
   message.append("**Maps:**")
@@ -98,9 +99,11 @@ def getInfo(type, team):
     calendarPage = getCalendar(url)
     nextMatch = findNextTeamMatch(calendarPage, team)
     if nextMatch == 0:
-      return "No matches remaining"
+      return "Your team is not signed up"
+    elif nextMatch == 1:
+      return "No matches remain to be played"
     else:
-      message = [nextMatch + "\n"]
+      message = [nextMatch]
       details = getDetailsMatchPage(nextMatch)
       message.extend(details)
       return "\n".join(message)
