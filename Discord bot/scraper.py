@@ -52,7 +52,40 @@ def findNextTeamMatch(calendar, team):
         return match['href']
     # No uncompleted match remaining
     return 0
-    
+
+# Returns all the details of the match
+# url must correspond to a match page
+def getDetailsMatchPage(url):
+  matchPage = soupify(url)
+  message = []
+  #Get the teams
+  teams = list(matchPage.find_all(class_="matchclan"))
+  message.append("**" + teams[0].get_text() + " vs " + teams[1].get_text() + "**")
+  
+  #Get the info
+  info = list(matchPage.find_all(class_="matchinfo-info"))
+  counter = 0
+  for infoEntry in info:
+    if counter < 3:
+      message.append(infoEntry.get_text())
+      counter += 1
+  
+  #Add seperation
+  message.append("\n")
+
+  #Get the maps
+  message.append("**Maps:**")
+  maps = list(matchPage.find_all(class_="match-pregame-map"))
+  counter = 1
+  for map in maps:
+    if counter == 5:
+      message.append("[ACE]: " + map.get_text().lower())
+    else:
+      message.append("[" + "{}".format(counter) + "]: " + map.get_text().lower())
+      counter += 1
+ 
+  return message
+
 def getInfo(type, team):
   #navigate to the tournament page
   if (type < 1 or type > 3):
@@ -67,4 +100,7 @@ def getInfo(type, team):
     if nextMatch == 0:
       return "No matches remaining"
     else:
-      return nextMatch
+      message = [nextMatch + "\n"]
+      details = getDetailsMatchPage(nextMatch)
+      message.extend(details)
+      return "\n".join(message)
