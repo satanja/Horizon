@@ -52,30 +52,15 @@ async def pro():
   color = leagueColors.PRO
   await client.say(embed = generateEmbed(color, 1, TEAM))
 
-  #embed = discord.Embed(title="Next alpha teamleauge match", description="", color=0xE67E22)
-  #embed.add_field(name="Basic info", value="test")
-  #embed.add_field(name="Maps", value = getInfo(1, TEAM))
-  #await client.say(embed = embed)
-
 @client.command()
 async def semipro():
   color = leagueColors.SEMIPRO
   await client.say(embed = generateEmbed(color, 2, TEAM))
 
-  #embed = discord.Embed(title="Next alpha teamleauge match", description="", color=0x3498DB)
-  #embed.add_field(name="Basic info", value="test")
-  #embed.add_field(name="Maps", value = getInfo(2, TEAM))
-  #await client.say(embed = embed)
-
 @client.command()
 async def amateur():
   color = leagueColors.AMATEUR
   await client.say(embed = generateEmbed(color, 3, TEAM))
-
-  #embed = discord.Embed(title="Next alpha teamleauge match", description="", color=0x2ECC71)
-  #embed.add_field(name="Basic info", value="test")
-  #embed.add_field(name="Maps", value = getInfo(3, TEAM))
-  #await client.say(embed = embed)
 
 
 
