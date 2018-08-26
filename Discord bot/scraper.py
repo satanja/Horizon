@@ -1,4 +1,5 @@
 import requests
+import string
 from bs4 import BeautifulSoup
 
 # Constants
@@ -80,13 +81,17 @@ def getMaps(url):
   maps = []
   mapElements = list(matchPage.find_all(class_="match-pregame-map"))
   for mapElement in mapElements:
-    maps.append(mapElement.get_text().lower())
+    mapString = string.capwords(mapElement.get_text().lower())
+    maps.append(mapString)
   return maps
 
 # Returns all the information of the next match the team has to play
-# details[0] contains the teams
-# details[1] contains the basic info of the match (date, time, etc)
-# details[2] contains the maps
+# if there exists a next match:
+#   details[0] contains the teams
+#   details[1] contains the basic info of the match (date, time, etc)
+#   details[2] contains the maps
+# otherwise:
+#   return a string
 def getInfo(type, team):
   #navigate to the tournament page
   if (type < 1 or type > 3):
