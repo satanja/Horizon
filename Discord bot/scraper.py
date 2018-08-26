@@ -54,47 +54,44 @@ def findNextTeamMatch(calendar, team):
     # No uncompleted match remaining
     return 1
 
-# Returns all the details of the match
-# url must correspond to a match page
-def getDetailsMatchPage(url):
+# Finds the both teams of the match and returns them in an array
+def getTeams(url):
   matchPage = soupify(url)
-  message = []
-  #Get the teams
-  teams = list(matchPage.find_all(class_="matchclan"))
-  message.append("**" + teams[0].get_text() + " vs " + teams[1].get_text() + "**")
-  
-  #Get the info
-  info = list(matchPage.find_all(class_="matchinfo-info"))
-  counter = 0
-  for infoEntry in info:
-    if counter < 3:
-      message.append(infoEntry.get_text())
-      counter += 1
-  
-  #Add seperation
-  message.append("")
+  teams = []
+  teamElements = list(matchPage.find_all(class_ = "matchclan"))
+  for teamElement in teamElements:
+    teams.append(teamElement.get_text())
+  return teams
 
-  #Get the maps
-  message.append("**Maps:**")
-  maps = list(matchPage.find_all(class_="match-pregame-map"))
-  counter = 1
-  for map in maps:
-    if counter == 5:
-      message.append("[ACE]: " + map.get_text().lower())
-    else:
-      message.append("[" + "{}".format(counter) + "]: " + map.get_text().lower())
-      counter += 1
- 
-  return message
+# Finds the date, time, and chat channel on the webpage.
+# The are returned in an array together with the url of the webpage
+def getBasicInfo(url):
+  matchPage = soupify(url)
+  info = []
+  infoElements = list(matchPage.find_all(class_="matchinfo-info"))
+  for i in range(0, 3):
+    info.append(infoElements[i].get_text())
+  info.append(url)
+  return info
 
+# Finds the maps of the match and returns them in an array
+def getMaps(url):
+  matchPage = soupify(url)
+  maps = []
+  mapElements = list(matchPage.find_all(class_="match-pregame-map"))
+  for mapElement in mapElements:
+    maps.append(mapElement.get_text().lower())
+  return maps
+
+# Returns all the information of the next match the team has to play
+# details[0] contains the teams
+# details[1] contains the basic info of the match (date, time, etc)
+# details[2] contains the maps
 def getInfo(type, team):
   #navigate to the tournament page
   if (type < 1 or type > 3):
     print("Invalid type")
   else: 
-    #TODO remove 
-    print(URL + tournamentSelect(type))
-
     url = URL + tournamentSelect(type)
     calendarPage = getCalendar(url)
     nextMatch = findNextTeamMatch(calendarPage, team)
@@ -103,7 +100,8 @@ def getInfo(type, team):
     elif nextMatch == 1:
       return "No matches remain to be played"
     else:
-      message = [nextMatch]
-      details = getDetailsMatchPage(nextMatch)
-      message.extend(details)
-      return "\n".join(message)
+      details = []
+      details.append(getTeams(nextMatch))
+      details.append(getBasicInfo(nextMatch))
+      details.append(getMaps(nextMatch))
+      return details
