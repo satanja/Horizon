@@ -23,7 +23,7 @@ def formatMaps(maps):
     if (i == 4):
       result += "[ACE]: "
     else:
-      result += "[" + str(i) + "]: "
+      result += "[" + str(i + 1) + "]: "
     result += maps[i] + "\n"
   return result
 
@@ -62,6 +62,4 @@ async def amateur():
   color = leagueColors.AMATEUR
   await client.say(embed = generateEmbed(color, 3, TEAM))
 
-
-
-client.run(tokenfile.TOKEN)
+client.run(process.env.BOT_TOKEN)
